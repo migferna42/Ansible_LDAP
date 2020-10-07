@@ -1,0 +1,35 @@
+---
+- name: Create ldap network
+  hosts: localhost
+  tasks:
+  - docker_network:
+      name: ldap_network
+- name: Create openldap container
+  hosts: localhost
+  tasks:
+  - docker_container:
+      name: openldap
+      image: osixia/openldap:1.4.0
+      container_default_behavior: no_defaults
+      env:
+        LDAP_DOMAIN: "mafernandez.code"
+        LDAP_ADMIN_PASSWORD: "admin"
+      ports:
+        - "389:389"
+        - "636:636"
+      networks:
+        - name: ldap_network
+- name: Create phpopenldapadmin container
+  hosts: localhost
+  tasks:
+  - docker_container:
+      name: phpldapadmin
+      image: osixia/phpldapadmin:latest
+      container_default_behavior: no_defaults
+      env:
+        PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+        PHPLDAPADMIN_HTTPS: "false"
+      ports:
+        "8080:80"
+      networks:
+        - name: ldap_network

@@ -1,0 +1,13 @@
+---
+- name: Delete openldap container
+  hosts: localhost
+  tasks:
+  - docker_container:
+      name: openldap
+      state: absent
+- name: Delete phpldapadmin container
+  hosts: localhost
+  tasks:
+  - docker_container:
+      name: phpldapadmin
+      state: absent
